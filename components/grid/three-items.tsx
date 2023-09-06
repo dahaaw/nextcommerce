@@ -1,9 +1,12 @@
+import { getProductsReviewInfo } from '@sledge-app/api';
 import { GridTileImage } from 'components/grid/tile';
 import { getCollectionProducts } from 'lib/shopify';
+import parseGid from 'lib/shopify/parse-gid';
 import type { Product } from 'lib/shopify/types';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 
-function ThreeItemGridItem({
+async function ThreeItemGridItem({
   item,
   size,
   priority
@@ -12,6 +15,9 @@ function ThreeItemGridItem({
   size: 'full' | 'half';
   priority?: boolean;
 }) {
+  const sledgeSession = JSON.parse( cookies().get( 'sledgeSession' )?.value || "{}" );
+  const reviews = await getProductsReviewInfo( sledgeSession, [ item.id ] );
+  
   return (
     <div
       className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
@@ -31,6 +37,7 @@ function ThreeItemGridItem({
             amount: item.priceRange.maxVariantPrice.amount,
             currencyCode: item.priceRange.maxVariantPrice.currencyCode
           }}
+          rating={ reviews[ parseGid(item.id).id ] }
         />
       </Link>
     </div>
@@ -40,7 +47,7 @@ function ThreeItemGridItem({
 export async function ThreeItemGrid() {
   // Collections that start with `hidden-*` are hidden from the search page.
   const homepageItems = await getCollectionProducts({
-    collection: 'hidden-homepage-featured-items'
+    collection: 'adidas'
   });
 
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;

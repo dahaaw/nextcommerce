@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { RatingComponent } from 'components/sledge/review';
 import Image from 'next/image';
 import Label from '../label';
 
@@ -6,6 +7,7 @@ export function GridTileImage({
   isInteractive = true,
   active,
   label,
+  rating,
   ...props
 }: {
   isInteractive?: boolean;
@@ -16,6 +18,7 @@ export function GridTileImage({
     currencyCode: string;
     position?: 'bottom' | 'center';
   };
+  rating?: any
 } & React.ComponentProps<typeof Image>) {
   return (
     <div
@@ -37,6 +40,11 @@ export function GridTileImage({
           {...props}
         />
       ) : null}
+      <div style={{position: 'absolute', top: 20, left: 20}}>
+      
+      {rating && <RatingComponent data={rating}/>}
+
+      </div>
       {label ? (
         <Label
           title={label.title}

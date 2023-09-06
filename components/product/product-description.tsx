@@ -1,10 +1,11 @@
 import { AddToCart } from 'components/cart/add-to-cart';
 import Price from 'components/price';
 import Prose from 'components/prose';
+import { RatingComponent } from 'components/sledge/review';
 import { Product } from 'lib/shopify/types';
 import { VariantSelector } from './variant-selector';
 
-export function ProductDescription({ product }: { product: Product }) {
+export function ProductDescription({ product, rating }: { product: Product; rating?: any }) {
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
@@ -14,6 +15,9 @@ export function ProductDescription({ product }: { product: Product }) {
             amount={product.priceRange.maxVariantPrice.amount}
             currencyCode={product.priceRange.maxVariantPrice.currencyCode}
           />
+        </div>
+        <div className='mt-4'>
+          {rating && <RatingComponent data={ rating } />}
         </div>
       </div>
       <VariantSelector options={product.options} variants={product.variants} />

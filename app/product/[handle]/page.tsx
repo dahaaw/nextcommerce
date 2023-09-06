@@ -2,13 +2,17 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import { getProductsReviewInfo, getReview } from '@sledge-app/api';
 import { GridTileImage } from 'components/grid/tile';
 import Footer from 'components/layout/footer';
 import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
+import { ReviewWidget } from 'components/sledge/review';
 import { HIDDEN_PRODUCT_TAG } from 'lib/constants';
 import { getProduct, getProductRecommendations } from 'lib/shopify';
+import parseGid from 'lib/shopify/parse-gid';
 import { Image } from 'lib/shopify/types';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 
 export const runtime = 'edge';
@@ -51,10 +55,18 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({ params }: { params: { handle: string } }) {
+export default async function ProductPage({ params, searchParams }: { params: { handle: string }, searchParams: { [key: string]: string | string[] | undefined }; }) {
   const product = await getProduct(params.handle);
 
   if (!product) return notFound();
+
+  const { page, sort } = searchParams;
+  const sledgeSession = JSON.parse( cookies().get( 'sledgeSession')?.value || "{}" );
+  const review = await getProductsReviewInfo(sledgeSession, [product.id]);
+  const reviewList = await getReview(sledgeSession, product.id, {
+    page: Number(page || '1'),
+    sort: sort?.toString()
+  });
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -93,8 +105,11 @@ export default async function ProductPage({ params }: { params: { handle: string
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <ProductDescription product={product} />
+            <ProductDescription product={product} rating={ review[ parseGid( product.id ).id ] } />
           </div>
+        </div>
+        <div className='px-10'>
+          <ReviewWidget product={product} dataList={reviewList} dataSummary={review[ parseGid( product.id ).id ]} />
         </div>
         <Suspense>
           <RelatedProducts id={product.id} />

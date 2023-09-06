@@ -1,6 +1,9 @@
+import { getSledgeSettings } from '@sledge-app/api';
 import Navbar from 'components/layout/navbar';
+import { SledgeProviderComponent } from 'components/sledge';
 import { ensureStartsWith } from 'lib/utils';
 import { Inter } from 'next/font/google';
+import { cookies } from 'next/headers';
 import { ReactNode, Suspense } from 'react';
 import './globals.css';
 
@@ -38,13 +41,23 @@ const inter = Inter({
 });
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+
+  const sledgeSession = JSON.parse(cookies().get('sledgeSession')?.value || '{}');
+  const sledgeSettings = await getSledgeSettings(sledgeSession);
+  
   return (
     <html lang="en" className={inter.variable}>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
-        <Navbar />
-        <Suspense>
+        <SledgeProviderComponent
+          sledgeSession={sledgeSession}
+          sledgeSettings={sledgeSettings}
+        >
+          <Suspense>
+            
+          <Navbar />
           <main>{children}</main>
-        </Suspense>
+          </Suspense>
+        </SledgeProviderComponent>
       </body>
     </html>
   );

@@ -1,15 +1,22 @@
+import { getProductsReviewInfo } from '@sledge-app/api';
 import { getCollectionProducts } from 'lib/shopify';
+import parseGid from 'lib/shopify/parse-gid';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
 
 export async function Carousel() {
   // Collections that start with `hidden-*` are hidden from the search page.
-  const products = await getCollectionProducts({ collection: 'hidden-homepage-carousel' });
+  const products = await getCollectionProducts({ collection: 'vans' });
 
   if (!products?.length) return null;
 
   // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
   const carouselProducts = [...products, ...products, ...products];
+
+  const IDs = carouselProducts.map(v => v.id );
+  const sledgeSession = JSON.parse( cookies().get( 'sledgeSession' )?.value || '{}' );
+  const reviews = await getProductsReviewInfo( sledgeSession, IDs );
 
   return (
     <div className=" w-full overflow-x-auto pb-6 pt-1">
@@ -30,6 +37,7 @@ export async function Carousel() {
                 src={product.featuredImage?.url}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                rating={ reviews[ parseGid( product.id ).id ] }
               />
             </Link>
           </li>
