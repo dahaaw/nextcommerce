@@ -27,7 +27,6 @@
     "@sledge-app/api": "^0.0.5",
     "@sledge-app/core": "^0.0.94",
     "@sledge-app/react-product-review": "^0.0.73",
-    "@sledge-app/react-wishlist": "^0.0.142",
     "clsx": "^2.0.0",
     "next": "13.4.13-canary.15",
     "react": "18.2.0",
