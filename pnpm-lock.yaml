@@ -20,9 +20,6 @@ dependencies:
   '@sledge-app/react-product-review':
     specifier: ^0.0.73
     version: 0.0.73(@types/react-dom@18.2.7)(@types/react@18.2.16)
-  '@sledge-app/react-wishlist':
-    specifier: ^0.0.142
-    version: 0.0.142(@types/react-dom@18.2.7)(@types/react@18.2.16)
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
@@ -779,18 +776,6 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       react-responsive-masonry: 2.1.7
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-    dev: false
-
-  /@sledge-app/react-wishlist@0.0.142(@types/react-dom@18.2.7)(@types/react@18.2.16):
-    resolution: {integrity: sha512-oEB6w9M+DCicZvCYRSLWcY2R+cJo6WXhPUSz2mHnEfL+bgFPnLAJbtIYrcCHiXAgQ2juyE0iCSHYq1/80tuAXQ==}
-    dependencies:
-      '@radix-ui/react-dialog': 1.0.4(@types/react-dom@18.2.7)(@types/react@18.2.16)(react-dom@18.2.0)(react@18.2.0)
-      framer-motion: 10.16.4(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
